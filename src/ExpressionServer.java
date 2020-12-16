@@ -21,11 +21,20 @@ public class ExpressionServer {
     }
 
     public void start() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(port);
-        while (true) {
-                Socket socket = serverSocket.accept();
-                ExpressionClientHandler exprClientHandler = new ExpressionClientHandler(socket, this, ps);
-                exprClientHandler.start();
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            while (true) {
+                try {
+                    Socket socket = serverSocket.accept();
+                    executorService.submit(() -> {
+                        ExpressionClientHandler exprClientHandler = new ExpressionClientHandler(socket, this, ps);
+                        exprClientHandler.start();
+                    });
+                } catch (IOException e) {
+                    System.err.printf("Cannot accept connection due to %s", e);
+                }
+            }
+        } finally {
+            executorService.shutdown();
         }
     }
 
@@ -33,15 +42,15 @@ public class ExpressionServer {
         return "BYE";
     }
 
-    public String getStatCommand(int i){
+    public String getStatCommand(int i) {
         return statsCommand[i];
     }
 
-    public List<Long> getComputationTimes(){
+    public List<Long> getComputationTimes() {
         return computationTimes;
     }
 
-    public void addComputationTime (long computationTime) {
+    public void addComputationTime(long computationTime) {
         computationTimes.add(computationTime);
     }
 
@@ -51,7 +60,7 @@ public class ExpressionServer {
             System.exit(0);
         }
         if (!parameterIsInt(args[0]))
-            throw new NumberFormatException("The given number is not an integer");
+            throw new NumberFormatException("The given port number is not an integer");
         int port = Integer.parseInt(args[0]);
         int cores = Runtime.getRuntime().availableProcessors();
         System.out.printf("The available cores are: %d%n", cores);
