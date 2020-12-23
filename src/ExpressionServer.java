@@ -21,11 +21,21 @@ public class ExpressionServer {
     }
 
     public void start() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(port);
-        while (true) {
-                Socket socket = serverSocket.accept();
-                ExpressionClientHandler exprClientHandler = new ExpressionClientHandler(socket, this, ps);
-                exprClientHandler.start();
+        try(ServerSocket serverSocket = new ServerSocket(port)) {
+            while (true) {
+                try {
+                    Socket socket = serverSocket.accept();
+                    executorService.submit(() -> {
+                        ExpressionClientHandler exprClientHandler = new ExpressionClientHandler(socket, this, ps);
+                        exprClientHandler.start();
+                    });
+                } catch (IOException e) {
+                    System.err.printf("Cannot accept connection due to %s", e);
+                }
+            }
+        }
+        finally {
+            executorService.shutdown();
         }
     }
 
