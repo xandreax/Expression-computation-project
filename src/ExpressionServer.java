@@ -9,9 +9,8 @@ import java.util.concurrent.Executors;
 public class ExpressionServer {
 
     private final int port;
-    private final String[] statsCommand = {"STAT_REQS", "STAT_AVG_TIME", "STAT_MAX_TIME"};
     private final PrintStream ps;
-    private final List<Long> computationTimes = new ArrayList<Long>();
+    private final List<Long> computationTimes = new ArrayList<>();
     private final ExecutorService executorService;
 
     public ExpressionServer(int port, OutputStream os, int concurrentClients) {
@@ -41,10 +40,6 @@ public class ExpressionServer {
 
     public String getQuitCommand() {
         return "BYE";
-    }
-
-    public String getStatCommand(int i){
-        return statsCommand[i];
     }
 
     public List<Long> getComputationTimes(){
