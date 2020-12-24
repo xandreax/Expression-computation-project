@@ -1,3 +1,5 @@
+import ExpressionResponse.ResultResponse;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
@@ -51,6 +53,8 @@ public class ExpressionClientHandler extends Thread {
             }
         } catch (IOException e) {
             System.err.printf("IO exception: %s", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         try {
             socket.close();

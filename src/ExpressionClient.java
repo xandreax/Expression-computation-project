@@ -27,7 +27,7 @@ public class ExpressionClient {
                 System.out.println("Flush!");
                 String received = String.valueOf(dis.read());
                 System.out.println(received);
-                System.out.println("Captured Response!");
+                System.out.println("Captured ExpressionResponse.Response!");
                 System.out.printf("Sent: %s%nReceived: %s%n", sent, received);
                 if (sent.equals("BYE"))
                     break;
