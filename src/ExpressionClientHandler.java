@@ -35,7 +35,8 @@ public class ExpressionClientHandler extends Thread {
                 else if (line.equals(server.getQuitCommand())) {
                     break;
                 } else if (StatCommand.match(line)){
-                    result = statistic(line,server.getComputationTimes());
+                    StatisticProcess statistic = new StatisticProcess(line, server.getComputationTimes());
+                    result = statistic.evaluate();
                 } else {
                     ComputationProcess computation = new ComputationProcess(line);
                     result = computation.evaluate();
@@ -58,29 +59,5 @@ public class ExpressionClientHandler extends Thread {
         } catch (IOException e) {
             System.err.printf("IO exception: %s", e);
         }
-    }
-
-    protected String statistic(String input, List<Long> computationTimes) {
-        String response;
-        if (input.equals(server.getStatCommand(0))) {
-            response = Integer.toString(computationTimes.size());
-            System.out.println(response);
-        } else if (input.equals(server.getStatCommand(1))) {
-            long totalReqTime = 0;
-            for (long req : computationTimes) {
-                totalReqTime = totalReqTime + req;
-            }
-            response = Long.toString(totalReqTime / computationTimes.size());
-            System.out.println(response);
-        } else {
-            long maxReqTime = 0;
-            for (long req : computationTimes) {
-                if (req > maxReqTime)
-                    maxReqTime = req;
-            }
-            response = Long.toString(maxReqTime);
-            System.out.println(response);
-        }
-        return response;
     }
 }

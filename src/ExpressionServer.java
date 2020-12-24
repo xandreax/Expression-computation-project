@@ -10,13 +10,14 @@ public class ExpressionServer {
 
     private final int port;
     private final PrintStream ps;
-    private final List<Long> computationTimes = new ArrayList<>();
+    private final List<Long> computationTimes;
     private final ExecutorService executorService;
 
     public ExpressionServer(int port, OutputStream os, int concurrentClients) {
         this.port = port;
         ps = new PrintStream(os);
         executorService = Executors.newFixedThreadPool(concurrentClients);
+        computationTimes = new ArrayList<>();
     }
 
     public void start() throws IOException {

@@ -15,4 +15,8 @@ public enum StatCommand {
         }
         return false;
     }
+
+    public String getValue(){
+        return statCommand;
+    }
 }
