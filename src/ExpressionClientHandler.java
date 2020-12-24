@@ -26,27 +26,26 @@ public class ExpressionClientHandler extends Thread {
             while (true) {
                 System.out.println("Ready to receive");
                 String line = br.readLine();
+                String result;
                 startTime = System.currentTimeMillis();
                 if(line == null){
                     System.err.println("Client abruptly closed connection");
+                    break;
                 }
                 else if (line.equals(server.getQuitCommand())) {
                     break;
-                } else if (line.equals(server.getStatCommand(0)) || line.equals(server.getStatCommand(1)) || line.equals(server.getStatCommand(2))) {
-                    String result = statistic(line,server.getComputationTimes());
-                    bw.write(createResponseString(startTime, server, result) + System.lineSeparator());
-                    bw.flush();
-                    requestsCounter = requestsCounter + 1;
+                } else if (StatCommand.match(line)){
+                    result = statistic(line,server.getComputationTimes());
                 } else {
                     ComputationProcess computation = new ComputationProcess(line);
-                    String result = computation.evaluate();
-                    bw.write(createResponseString(startTime, server, result) + System.lineSeparator());
-                    bw.flush();
-                    requestsCounter = requestsCounter + 1;
+                    result = computation.evaluate();
                 }
                 endTime = System.currentTimeMillis();
                 computationTime = endTime - startTime;
                 server.addComputationTime(computationTime);
+                bw.write(ResultResponse.create(result, computationTime) + System.lineSeparator());
+                bw.flush();
+                requestsCounter = requestsCounter + 1;
                 ps.printf("Computation done in %.3f seconds", (float)(computationTime / 1000));
             }
         } catch (IOException e) {
@@ -83,16 +82,5 @@ public class ExpressionClientHandler extends Thread {
             System.out.println(response);
         }
         return response;
-    }
-
-    private static String createResponseString(long startTime, ExpressionServer server, String result) {
-        if (!computationError) {
-            long endTime = System.currentTimeMillis();
-            long computationTime = endTime - startTime;
-            server.addComputationTime(computationTime);
-            return "OK;"+computationTime+";"+result;
-        } else {
-            return "ERR;"+errorDescription;
-        }
     }
 }
