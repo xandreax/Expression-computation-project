@@ -1,3 +1,5 @@
+import ExpressionParser.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -138,7 +140,7 @@ public class ComputationProcess {
             else if(expressionParsed.getChildren().get(0) instanceof Variable){
                 String variable = ((Variable) expressionParsed).getName();
                 boolean varFound = false;
-                int index;
+                int index = 0;
                 for(String nameVar : variables){
                     if(variable.equals(nameVar)) {
                         index = variables.indexOf(nameVar);
