@@ -13,30 +13,25 @@ public class ExpressionClient {
         }
         Socket socket = new Socket(serverIneptAddress, 10000);
         System.out.println("Connection...");
-        DataInputStream dis = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-        DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Ready to send");
             try {
                 String sent = scanner.next();
                 System.out.println(sent);
-                dos.writeBytes(sent + System.lineSeparator());
+                bw.write(sent + System.lineSeparator());
                 System.out.println("Sent!");
-                dos.flush();
+                bw.flush();
                 System.out.println("Flush!");
-                String received = String.valueOf(dis.read());
-                System.out.println(received);
-                System.out.println("Captured ExpressionResponse.Response!");
-                System.out.printf("Sent: %s%nReceived: %s%n", sent, received);
+                String result = br.readLine();
+                System.out.printf("Sent: %s%nReceived: %s%n", sent, result);
                 if (sent.equals("BYE"))
                     break;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //dos.writeBytes("BYE" + System.lineSeparator());
-            //dos.flush();
-            //socket.close();
         }
         socket.close();
     }
