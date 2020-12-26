@@ -10,7 +10,7 @@ public class ExpressionServer {
 
     private final int port;
     private final PrintStream ps;
-    private final List<Long> computationTimes;
+    private final List<Float> computationTimes;
     private final ExecutorService executorService;
 
     public ExpressionServer(int port, OutputStream os, int concurrentClients) {
@@ -43,11 +43,11 @@ public class ExpressionServer {
         return "BYE";
     }
 
-    public List<Long> getComputationTimes(){
+    public List<Float> getComputationTimes(){
         return computationTimes;
     }
 
-    public void addComputationTime (long computationTime) {
+    public void addComputationTime (float computationTime) {
         computationTimes.add(computationTime);
     }
 

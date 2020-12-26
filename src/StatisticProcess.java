@@ -3,9 +3,9 @@ import java.util.List;
 public class StatisticProcess {
 
     private final String command;
-    private final List<Long> computationTimesList;
+    private final List<Float> computationTimesList;
 
-    public StatisticProcess(String command, List<Long> computationTimesList) {
+    public StatisticProcess(String command, List<Float> computationTimesList) {
         this.command = command;
         this.computationTimesList = computationTimesList;
     }
@@ -16,19 +16,19 @@ public class StatisticProcess {
             response = Integer.toString(computationTimesList.size());
             System.out.println(response);
         } else if(command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
-            long totalReqTime = 0;
-            for (long req : computationTimesList) {
+            float totalReqTime = 0;
+            for (float req : computationTimesList) {
                 totalReqTime = totalReqTime + req;
             }
-            response = Long.toString(totalReqTime / computationTimesList.size());
+            response = Float.toString(totalReqTime / computationTimesList.size());
             System.out.println(response);
         } else {
-            long maxReqTime = 0;
-            for (long req : computationTimesList) {
+            float maxReqTime = 0;
+            for (float req : computationTimesList) {
                 if (req > maxReqTime)
                     maxReqTime = req;
             }
-            response = Long.toString(maxReqTime);
+            response = Float.toString(maxReqTime);
             System.out.println(response);
         }
         return response;
