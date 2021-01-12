@@ -10,26 +10,27 @@ public class StatisticProcess {
         this.computationTimesList = computationTimesList;
     }
 
-    public String evaluate() {
-        String response;
+    public String[] evaluate() {
+        String[] response = new String[2];
+        response[0] = "false";
         if(command.equals(StatCommand.SUM_OF_REQUESTS.getValue())) {
-            response = Integer.toString(computationTimesList.size());
-            System.out.println(response);
+            response[1] = Integer.toString(computationTimesList.size());
+            System.out.println(response[1]);//test
         } else if(command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
             float totalReqTime = 0;
             for (float req : computationTimesList) {
                 totalReqTime = totalReqTime + req;
             }
-            response = Float.toString(totalReqTime / computationTimesList.size());
-            System.out.println(response);
+            response[1] = Float.toString(totalReqTime / computationTimesList.size());
+            System.out.println(response[1]);//test
         } else {
             float maxReqTime = 0;
             for (float req : computationTimesList) {
                 if (req > maxReqTime)
                     maxReqTime = req;
             }
-            response = Float.toString(maxReqTime);
-            System.out.println(response);
+            response[1] = Float.toString(maxReqTime);
+            System.out.println(response[1]);//test
         }
         return response;
     }

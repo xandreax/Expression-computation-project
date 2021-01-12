@@ -1,16 +1,14 @@
+import ExpressionResponse.ErrorResponse;
 import ExpressionResponse.ResultResponse;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
 
 public class ExpressionClientHandler extends Thread {
 
     private final Socket socket;
     private final ExpressionServer server;
     private final PrintStream ps;
-    private static boolean computationError = false;
-    private static String errorDescription;
 
     public ExpressionClientHandler(Socket socket, ExpressionServer server, PrintStream ps) {
         this.socket = socket;
@@ -23,14 +21,14 @@ public class ExpressionClientHandler extends Thread {
         int requestsCounter = 0;
         long endTime, startTime;
         float computationTime;
+
         try(socket) {
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             while (true) {
+                String[] result;
                 System.out.println("Ready to receive");
                 String line = br.readLine();
-                System.out.println(line);//test
-                String result;
                 startTime = System.currentTimeMillis();
                 if(line == null){
                     System.err.println("Client abruptly closed connection");
@@ -42,19 +40,23 @@ public class ExpressionClientHandler extends Thread {
                     StatisticProcess statistic = new StatisticProcess(line, server.getComputationTimes());
                     result = statistic.evaluate();
                 } else {
-                    //ComputationProcess computation = new ComputationProcess(line);
-                    //result = computation.evaluate();
-                    sleep(100);
-                    result = "1234";
+                    ComputationProcess computation = new ComputationProcess(line);
+                    result = computation.compute();
                 }
-                endTime = System.currentTimeMillis();
-                computationTime = (float) (endTime - startTime)/1000;
-                server.addComputationTime(computationTime);
-                System.out.println(result);//test
-                bw.write(ResultResponse.create(result, computationTime) + System.lineSeparator());
-                bw.flush();
-                requestsCounter = requestsCounter + 1;
-                ps.printf("Computation done in %.3f seconds .%n", computationTime);
+                if(result[0].equals("false")) {
+                    endTime = System.currentTimeMillis();
+                    computationTime = (float) (endTime - startTime) / 1000;
+                    server.addComputationTime(computationTime);
+                    System.out.println(result[1]);//test
+                    bw.write(ResultResponse.create(result[1], computationTime) + System.lineSeparator());
+                    bw.flush();
+                    requestsCounter = requestsCounter + 1;
+                    ps.printf("Computation done in %.3f seconds .%n", computationTime);
+                }
+                else {
+                    bw.write(ErrorResponse.create(result[1]) + System.lineSeparator());
+                    bw.flush();
+                }
             }
         } catch (IOException e) {
             System.err.printf("IO exception: %s", e);
