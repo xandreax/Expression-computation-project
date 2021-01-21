@@ -1,3 +1,5 @@
+package units.progadv.process.computation;
+
 public enum ValuesKind {
     GRID("GRID"),
     LIST("LIST");

@@ -1,4 +1,8 @@
-import ExpressionParser.*;
+package units.progadv.process.computation;
+
+import units.progadv.exceptions.LengthListException;
+import units.progadv.process.computation.ExpressionParser.Node;
+import units.progadv.process.computation.ExpressionParser.Parser;
 
 import java.util.*;
 
@@ -27,9 +31,6 @@ public class ComputationProcess {
         if (!ValuesKind.match(valuesKind))
             return computationErrorResponse("Wrong ValuesKind");
         LinkedHashMap<String, List<Double>> mapVariablesValues = getVariablesValues(lineTokens[1]);
-        // test map variables
-        System.out.println(mapVariablesValues);
-        //
         try {
             double[][] valuesTuplesT = getValuesTuples(valuesKind, mapVariablesValues);
             Parser parser;
@@ -103,7 +104,7 @@ public class ComputationProcess {
         return mapVariablesValues;
     }
 
-    private double[][] getValuesTuples(String valuesKind, LinkedHashMap<String, List<Double>> mapVariablesValues) {
+    private double[][] getValuesTuples(String valuesKind, LinkedHashMap<String, List<Double>> mapVariablesValues) throws LengthListException {
         int n = mapVariablesValues.keySet().size();
         double[][] valuesTuplesT;
         if (valuesKind.equals(ValuesKind.LIST.getValue())) {
@@ -112,7 +113,7 @@ public class ComputationProcess {
                 sumListsSize += tuple.size();
             }
             if (sumListsSize % n != 0)
-                throw new IndexOutOfBoundsException("Le liste non hanno lunghezza uguale");
+                throw new LengthListException("Cannot resolve LIST, lists have different length");
             else {
                 valuesTuplesT = new double[sumListsSize / n][n];
                 for (int i = 0; i < (sumListsSize / n); i++) {

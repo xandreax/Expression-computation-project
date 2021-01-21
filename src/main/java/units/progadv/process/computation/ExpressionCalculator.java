@@ -1,7 +1,9 @@
-import ExpressionParser.Constant;
-import ExpressionParser.Node;
-import ExpressionParser.Operator;
-import ExpressionParser.Variable;
+package units.progadv.process.computation;
+
+import units.progadv.process.computation.ExpressionParser.Constant;
+import units.progadv.process.computation.ExpressionParser.Node;
+import units.progadv.process.computation.ExpressionParser.Operator;
+import units.progadv.process.computation.ExpressionParser.Variable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

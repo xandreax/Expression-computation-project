@@ -1,3 +1,5 @@
+package units.progadv.process.statistic;
+
 public enum StatCommand {
     SUM_OF_REQUESTS("STAT_REQS"),
     AVERAGE_TIME_REQUESTS("STAT_AVG_TIME"),

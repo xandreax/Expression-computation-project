@@ -1,5 +1,10 @@
-import ExpressionResponse.ErrorResponse;
-import ExpressionResponse.ResultResponse;
+package units.progadv;
+
+import units.progadv.process.ExpressionResponse.ErrorResponse;
+import units.progadv.process.ExpressionResponse.ResultResponse;
+import units.progadv.process.computation.ComputationProcess;
+import units.progadv.process.statistic.StatCommand;
+import units.progadv.process.statistic.StatisticProcess;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,11 +32,10 @@ public class ExpressionClientHandler extends Thread {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             while (true) {
                 String[] result;
-                System.out.println("Ready to receive");
                 String line = br.readLine();
                 startTime = System.currentTimeMillis();
                 if(line == null){
-                    System.err.println("Client abruptly closed connection");
+                    System.err.println("Empty line input, closed connection");
                     break;
                 }
                 else if (line.equals(server.getQuitCommand())) {
@@ -51,17 +55,14 @@ public class ExpressionClientHandler extends Thread {
                     bw.write(ResultResponse.create(result[1], computationTime) + System.lineSeparator());
                     bw.flush();
                     requestsCounter = requestsCounter + 1;
-                    ps.printf("Computation done in %.3f seconds .%n", computationTime);
                 }
                 else {
                     bw.write(ErrorResponse.create(result[1]) + System.lineSeparator());
                     bw.flush();
                 }
             }
-        } catch (IOException e) {
-            System.err.printf("IO exception: %s", e);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.printf("IO exception: %s", e);
         }
         try {
             socket.close();

@@ -1,3 +1,5 @@
+package units.progadv.process.statistic;
+
 import java.util.List;
 
 public class StatisticProcess {
@@ -15,14 +17,12 @@ public class StatisticProcess {
         response[0] = "false";
         if(command.equals(StatCommand.SUM_OF_REQUESTS.getValue())) {
             response[1] = Integer.toString(computationTimesList.size());
-            System.out.println(response[1]);//test
         } else if(command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
             float totalReqTime = 0;
             for (float req : computationTimesList) {
                 totalReqTime = totalReqTime + req;
             }
             response[1] = Float.toString(totalReqTime / computationTimesList.size());
-            System.out.println(response[1]);//test
         } else {
             float maxReqTime = 0;
             for (float req : computationTimesList) {
@@ -30,7 +30,6 @@ public class StatisticProcess {
                     maxReqTime = req;
             }
             response[1] = Float.toString(maxReqTime);
-            System.out.println(response[1]);//test
         }
         return response;
     }
