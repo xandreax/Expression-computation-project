@@ -12,24 +12,23 @@ public class StatisticProcess {
         this.computationTimesList = computationTimesList;
     }
 
-    public String[] evaluate() {
-        String[] response = new String[2];
-        response[0] = "false";
+    public String evaluate() {
+        String response;
         if(command.equals(StatCommand.SUM_OF_REQUESTS.getValue())) {
-            response[1] = Integer.toString(computationTimesList.size());
+            response = Integer.toString(computationTimesList.size());
         } else if(command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
             float totalReqTime = 0;
             for (float req : computationTimesList) {
                 totalReqTime = totalReqTime + req;
             }
-            response[1] = Float.toString(totalReqTime / computationTimesList.size());
+            response = Float.toString(totalReqTime / computationTimesList.size());
         } else {
             float maxReqTime = 0;
             for (float req : computationTimesList) {
                 if (req > maxReqTime)
                     maxReqTime = req;
             }
-            response[1] = Float.toString(maxReqTime);
+            response = Float.toString(maxReqTime);
         }
         return response;
     }

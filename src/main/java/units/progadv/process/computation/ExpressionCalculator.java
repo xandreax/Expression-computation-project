@@ -1,5 +1,6 @@
 package units.progadv.process.computation;
 
+import units.progadv.exceptions.UnexpectedVariableException;
 import units.progadv.process.computation.ExpressionParser.Constant;
 import units.progadv.process.computation.ExpressionParser.Node;
 import units.progadv.process.computation.ExpressionParser.Operator;
@@ -19,7 +20,7 @@ public class ExpressionCalculator {
         this.mapVariablesValues = mapVariablesValues;
     }
 
-    public double calculate(Node expressionParsed) throws Exception {
+    public double calculate(Node expressionParsed) throws UnexpectedVariableException {
         if (expressionParsed instanceof Operator) {
             double a1, a2;
             if (expressionParsed.getChildren().get(0) instanceof Operator) {
@@ -30,7 +31,7 @@ public class ExpressionCalculator {
                 if (index!=-1) {
                     a1 = arrayTuple[index];
                 } else {
-                    throw new Exception("EXCEPTION: variable not found");
+                    throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
                 }
             } else {
                 a1 = ((Constant) expressionParsed.getChildren().get(0)).getValue();
@@ -43,7 +44,7 @@ public class ExpressionCalculator {
                 if (index != -1) {
                     a2 = arrayTuple[index];
                 } else {
-                    throw new Exception("EXCEPTION: variable not found");
+                    throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
                 }
             } else {
                 a2 = ((Constant) expressionParsed.getChildren().get(1)).getValue();;
@@ -59,7 +60,7 @@ public class ExpressionCalculator {
             if (index != -1) {
                 return arrayTuple[index];
             } else {
-                throw new Exception("EXCEPTION: variable not found");
+                throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
             }
         } else {
             return ((Constant) expressionParsed).getValue();

@@ -72,7 +72,7 @@ public class Parser {
         cursor = operatorToken.end;
       } else {
         throw new IllegalArgumentException(String.format(
-            "Unexpected char at %d instead of operator: '%s'",
+            "(Expression error) Unexpected char at %d instead of operator: '%s'",
             cursor,
             string.charAt(cursor)
         ));
@@ -83,7 +83,7 @@ public class Parser {
         cursor = closedBracketToken.end;
       } else {
         throw new IllegalArgumentException(String.format(
-            "Unexpected char at %d instead of closed bracket: '%s'",
+            "(Expression error) Unexpected char at %d instead of closed bracket: '%s'",
             cursor,
             string.charAt(cursor)
         ));
@@ -98,7 +98,7 @@ public class Parser {
       }
       if (operatorType==null) {
         throw new IllegalArgumentException(String.format(
-            "Unknown operator at %d: '%s'",
+            "(Expression error) Unknown operator at %d: '%s'",
             operatorToken.start,
             operatorString
         ));
@@ -106,7 +106,7 @@ public class Parser {
       return new Operator(operatorType, Arrays.asList(child1, child2));
     }
     throw new IllegalArgumentException(String.format(
-        "Unexpected char at %d: '%s'",
+        "(Expression error) Unexpected char at %d: '%s'",
         cursor,
         string.charAt(cursor)
     ));
