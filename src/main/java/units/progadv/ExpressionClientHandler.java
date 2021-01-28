@@ -24,7 +24,7 @@ public class ExpressionClientHandler extends Thread {
     }
 
     public void run() {
-        ps.printf(" [%1$tY-%1$tm-%1$td %1$tT] Connection from %2$s .%n", System.currentTimeMillis(), socket.getInetAddress());
+        logConnection();
         int requestsCounter = 0;
         long startTime;
         Response response;
@@ -37,7 +37,7 @@ public class ExpressionClientHandler extends Thread {
                 String line = br.readLine();
                 startTime = System.currentTimeMillis();
                 if (line == null) {
-                    System.err.printf("Empty line input, closed connection .%n");
+                    logError("Empty line input, closed connection .%n");
                     break;
                 } else if (line.equals(server.getQuitCommand())) {
                     break;
@@ -67,11 +67,23 @@ public class ExpressionClientHandler extends Thread {
                 requestsCounter = requestsCounter + 1;
             }
             socket.close();
-            ps.printf(" [%1$tY-%1$tm-%1$td %1$tT] Disconnection of %2$s after %3$d requests .%n",
-                    System.currentTimeMillis(), socket.getInetAddress(), requestsCounter);
+            logDisconnection(requestsCounter);
         } catch (IOException e) {
-            System.err.printf("IO exception: %s", e);
+            logError("IO exception: " + e.getMessage());
         }
+    }
+
+    private synchronized void logConnection() {
+        ps.printf(" [%1$tY-%1$tm-%1$td %1$tT] Connection from %2$s .%n", System.currentTimeMillis(), socket.getInetAddress());
+    }
+
+    private synchronized void logDisconnection(int requestsCounter) {
+        ps.printf(" [%1$tY-%1$tm-%1$td %1$tT] Disconnection of %2$s after %3$d requests .%n",
+                System.currentTimeMillis(), socket.getInetAddress(), requestsCounter);
+    }
+
+    private synchronized void logError(String e) {
+        System.err.print(e);
     }
 
     private static double calculateComputationTime(long startTime) {
