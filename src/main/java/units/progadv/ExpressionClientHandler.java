@@ -4,6 +4,7 @@ import units.progadv.exceptions.ComputationException;
 import units.progadv.process.ExpressionResponse.Response;
 import units.progadv.process.ExpressionResponse.ResultResponseFormatter;
 import units.progadv.process.computation.ComputationProcess;
+import units.progadv.process.statistic.ServerComputationTimeStatistic;
 import units.progadv.process.statistic.StatCommand;
 import units.progadv.process.statistic.StatisticProcess;
 
@@ -28,7 +29,6 @@ public class ExpressionClientHandler extends Thread {
         long startTime;
         Response response;
         double computationTime;
-
         try (socket) {
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -42,7 +42,7 @@ public class ExpressionClientHandler extends Thread {
                 } else if (line.equals(server.getQuitCommand())) {
                     break;
                 } else if (StatCommand.match(line)) {
-                    StatisticProcess statistic = new StatisticProcess(line, server.getComputationTimes());
+                    StatisticProcess statistic = new StatisticProcess(line);
                     result = statistic.evaluate();
                     computationTime = calculateComputationTime(startTime);
                     response = new Response(result, ResultResponseFormatter.formatTime(computationTime),
@@ -61,7 +61,7 @@ public class ExpressionClientHandler extends Thread {
                                 Response.ResponseType.ERR);
                     }
                 }
-                server.addComputationTime(computationTime);
+                ServerComputationTimeStatistic.getThis().addComputationTime(computationTime);
                 bw.write(response.toString() + System.lineSeparator());
                 bw.flush();
                 requestsCounter = requestsCounter + 1;

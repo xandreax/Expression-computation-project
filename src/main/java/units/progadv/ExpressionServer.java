@@ -12,14 +12,12 @@ public class ExpressionServer {
 
     private final int port;
     private final PrintStream ps;
-    private final List<Double> computationTimes;
     private final ExecutorService executorService;
 
     public ExpressionServer(int port, OutputStream os, int concurrentClients) {
         this.port = port;
         ps = new PrintStream(os);
         executorService = Executors.newFixedThreadPool(concurrentClients);
-        computationTimes = new ArrayList<>();
     }
 
     public void start() {
@@ -37,18 +35,8 @@ public class ExpressionServer {
             executorService.shutdown();
         }
     }
-
     public String getQuitCommand() {
         return "BYE";
     }
-
-    public List<Double> getComputationTimes() {
-        return computationTimes;
-    }
-
-    public synchronized void addComputationTime(double computationTime) {
-        computationTimes.add(computationTime);
-    }
-
 }
 
