@@ -6,14 +6,14 @@ public class Response {
     private final String computationTime;
     private final ResponseType respType;
 
-    public Response(String result, String computationTime, ResponseType respType){
+    public Response(String result, String computationTime, ResponseType respType) {
         this.result = result;
         this.computationTime = computationTime;
         this.respType = respType;
     }
 
     @Override
-    public String toString (){
+    public String toString() {
         return respType.toString() + ";" + computationTime + ";" + result;
     }
 

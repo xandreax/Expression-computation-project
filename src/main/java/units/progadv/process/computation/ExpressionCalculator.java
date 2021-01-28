@@ -16,7 +16,7 @@ public class ExpressionCalculator {
     private final List<Double> tuple;
     private final LinkedHashMap<String, List<Double>> mapVariablesValues;
 
-    public ExpressionCalculator(List<Double> tuple, LinkedHashMap<String, List<Double>> mapVariablesValues){
+    public ExpressionCalculator(List<Double> tuple, LinkedHashMap<String, List<Double>> mapVariablesValues) {
         this.tuple = tuple;
         this.mapVariablesValues = mapVariablesValues;
     }
@@ -29,7 +29,7 @@ public class ExpressionCalculator {
             } else if (expressionParsed.getChildren().get(0) instanceof Variable) {
                 String variable = ((Variable) expressionParsed.getChildren().get(0)).getName();
                 int index = findIndexVariable(variable, mapVariablesValues);
-                if (index!=-1) {
+                if (index != -1) {
                     a1 = tuple.get(index);
                 } else {
                     throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
@@ -48,7 +48,7 @@ public class ExpressionCalculator {
                     throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
                 }
             } else {
-                a2 = ((Constant) expressionParsed.getChildren().get(1)).getValue();;
+                a2 = ((Constant) expressionParsed.getChildren().get(1)).getValue();
             }
             double[] a = new double[2];
             a[0] = a1;
@@ -68,7 +68,7 @@ public class ExpressionCalculator {
         }
     }
 
-    private static int findIndexVariable (String variable, LinkedHashMap<String, List<Double>> mapVariablesValues){
+    private static int findIndexVariable(String variable, LinkedHashMap<String, List<Double>> mapVariablesValues) {
         List<String> indexes = new ArrayList<>(mapVariablesValues.keySet());
         return indexes.indexOf(variable);
     }

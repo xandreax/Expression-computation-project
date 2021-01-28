@@ -8,19 +8,19 @@ public enum ComputationKind {
 
     private final String computationKind;
 
-    ComputationKind (String computationKind){
+    ComputationKind(String computationKind) {
         this.computationKind = computationKind;
     }
 
-    public static boolean match (String line){
-        for(ComputationKind computationKindValue : ComputationKind.values()){
-            if(computationKindValue.computationKind.equals(line))
+    public static boolean match(String line) {
+        for (ComputationKind computationKindValue : ComputationKind.values()) {
+            if (computationKindValue.computationKind.equals(line))
                 return true;
         }
         return false;
     }
 
-    public String getValue(){
+    public String getValue() {
         return computationKind;
     }
 }

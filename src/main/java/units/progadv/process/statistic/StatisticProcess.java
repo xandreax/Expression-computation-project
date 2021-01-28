@@ -16,9 +16,9 @@ public class StatisticProcess {
 
     public String evaluate() {
         double response;
-        if(command.equals(StatCommand.SUM_OF_REQUESTS.getValue())) {
+        if (command.equals(StatCommand.SUM_OF_REQUESTS.getValue())) {
             response = computationTimesList.size();
-        } else if(command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
+        } else if (command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
             double totalReqTime = 0;
             for (Double req : computationTimesList) {
                 totalReqTime = totalReqTime + req;

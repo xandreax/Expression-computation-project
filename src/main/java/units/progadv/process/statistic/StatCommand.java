@@ -6,19 +6,19 @@ public enum StatCommand {
     MAX_TIME_REQUEST("STAT_MAX_TIME");
     private final String statCommand;
 
-    StatCommand (String statCommand){
+    StatCommand(String statCommand) {
         this.statCommand = statCommand;
     }
 
-    public static boolean match (String line){
-        for(StatCommand statCommandValue : StatCommand.values()){
-            if(statCommandValue.statCommand.equals(line))
+    public static boolean match(String line) {
+        for (StatCommand statCommandValue : StatCommand.values()) {
+            if (statCommandValue.statCommand.equals(line))
                 return true;
         }
         return false;
     }
 
-    public String getValue(){
+    public String getValue() {
         return statCommand;
     }
 }

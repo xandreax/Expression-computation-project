@@ -3,13 +3,13 @@ package units.progadv;
 
 public class ExpressionServerRunner {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("No arguments, please insert a port number in this format:" +
                     "\"java -jar MajcenAndrea.jar port_number\"");
             System.exit(0);
         }
-        if (args.length > 1){
+        if (args.length > 1) {
             System.out.println("Too many arguments, please insert a port number in this format:" +
                     "\"java -jar MajcenAndrea.jar port_number\"");
             System.exit(0);
