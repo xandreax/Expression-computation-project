@@ -1,35 +1,37 @@
 package units.progadv.process.statistic;
 
+import units.progadv.process.ExpressionResponse.ResultResponseFormatter;
+
 import java.util.List;
 
 public class StatisticProcess {
 
     private final String command;
-    private final List<Float> computationTimesList;
+    private final List<Double> computationTimesList;
 
-    public StatisticProcess(String command, List<Float> computationTimesList) {
+    public StatisticProcess(String command, List<Double> computationTimesList) {
         this.command = command;
         this.computationTimesList = computationTimesList;
     }
 
     public String evaluate() {
-        String response;
+        double response;
         if(command.equals(StatCommand.SUM_OF_REQUESTS.getValue())) {
-            response = Integer.toString(computationTimesList.size());
+            response = computationTimesList.size();
         } else if(command.equals(StatCommand.AVERAGE_TIME_REQUESTS.getValue())) {
-            float totalReqTime = 0;
-            for (float req : computationTimesList) {
+            double totalReqTime = 0;
+            for (Double req : computationTimesList) {
                 totalReqTime = totalReqTime + req;
             }
-            response = Float.toString(totalReqTime / computationTimesList.size());
+            response = totalReqTime / computationTimesList.size();
         } else {
-            float maxReqTime = 0;
-            for (float req : computationTimesList) {
+            double maxReqTime = 0;
+            for (double req : computationTimesList) {
                 if (req > maxReqTime)
                     maxReqTime = req;
             }
-            response = Float.toString(maxReqTime);
+            response = maxReqTime;
         }
-        return response;
+        return ResultResponseFormatter.formatResult(response);
     }
 }

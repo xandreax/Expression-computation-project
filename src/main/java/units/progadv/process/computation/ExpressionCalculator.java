@@ -8,15 +8,16 @@ import units.progadv.process.computation.ExpressionParser.Variable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ExpressionCalculator {
 
-    private final double[] arrayTuple;
+    private final List<Double> tuple;
     private final LinkedHashMap<String, List<Double>> mapVariablesValues;
 
-    public ExpressionCalculator(double[] arrayTuple, LinkedHashMap<String, List<Double>> mapVariablesValues){
-        this.arrayTuple = arrayTuple;
+    public ExpressionCalculator(List<Double> tuple, LinkedHashMap<String, List<Double>> mapVariablesValues){
+        this.tuple = tuple;
         this.mapVariablesValues = mapVariablesValues;
     }
 
@@ -29,7 +30,7 @@ public class ExpressionCalculator {
                 String variable = ((Variable) expressionParsed.getChildren().get(0)).getName();
                 int index = findIndexVariable(variable, mapVariablesValues);
                 if (index!=-1) {
-                    a1 = arrayTuple[index];
+                    a1 = tuple.get(index);
                 } else {
                     throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
                 }
@@ -42,7 +43,7 @@ public class ExpressionCalculator {
                 String variable = ((Variable) expressionParsed.getChildren().get(1)).getName();
                 int index = findIndexVariable(variable, mapVariablesValues);
                 if (index != -1) {
-                    a2 = arrayTuple[index];
+                    a2 = tuple.get(index);
                 } else {
                     throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
                 }
@@ -58,7 +59,7 @@ public class ExpressionCalculator {
             String variable = ((Variable) expressionParsed).getName();
             int index = findIndexVariable(variable, mapVariablesValues);
             if (index != -1) {
-                return arrayTuple[index];
+                return tuple.get(index);
             } else {
                 throw new UnexpectedVariableException(String.format("Unexpected variable %s found", variable));
             }

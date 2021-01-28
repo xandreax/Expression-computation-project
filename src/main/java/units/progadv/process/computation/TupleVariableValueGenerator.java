@@ -2,8 +2,7 @@ package units.progadv.process.computation;
 
 import units.progadv.exceptions.LengthListException;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class TupleVariableValueGenerator {
 
@@ -15,42 +14,41 @@ public class TupleVariableValueGenerator {
         this.mapVariablesValues = mapVariablesValues;
     }
 
-    public double[][] generateTuple () throws LengthListException {
+    public List<List<Double>> generateTuple() throws LengthListException {
         int n = mapVariablesValues.keySet().size();
-        double[][] valuesTuplesT;
+        List<List<Double>> tuples;
         if (valuesKind.equals(ValuesKind.LIST.getValue())) {
             int sumListsSize = 0;
-            for (List<Double> tuple : mapVariablesValues.values()) {
-                sumListsSize += tuple.size();
+            for (List<Double> variableValues : mapVariablesValues.values()) {
+                sumListsSize += variableValues.size();
             }
-            if (sumListsSize % n != 0)
+            if (n != 1 && sumListsSize % n != n)
                 throw new LengthListException("Cannot resolve LIST, lists have different length");
             else {
-                valuesTuplesT = new double[sumListsSize / n][n];
+                tuples = new ArrayList<>();
                 for (int i = 0; i < (sumListsSize / n); i++) {
-                    int j = 0;
-                    for (List<Double> tuple : mapVariablesValues.values()) {
-                        valuesTuplesT[i][j] = tuple.get(i);
-                        j++;
+                    List<Double> tuple = new ArrayList<>();
+                    for (List<Double> variableValues : mapVariablesValues.values()) {
+                        tuple.add(variableValues.get(i));
                     }
+                    tuples.add(tuple);
                 }
             }
         } else {
             //cartesian product
-            int solutions = 1;
-            for (List<Double> tuple : mapVariablesValues.values())
-                solutions *= tuple.size();
-            valuesTuplesT = new double[solutions][n];
-            for (int i = 0; i < solutions; i++) {
-                int j = 0;
-                int k = 1;
-                for (List<Double> list : mapVariablesValues.values()) {
-                    valuesTuplesT[i][j] = list.get((i / k) % list.size());
-                    k *= list.size();
-                    j++;
+            tuples = Arrays.asList(Arrays.asList());
+            for (List<Double> variableValues : mapVariablesValues.values()) {
+                List<List<Double>> extraTuples = new ArrayList<>();
+                for (List<Double> tuple : tuples) {
+                    for (double value : variableValues) {
+                        List<Double> newTuple = new ArrayList<>(tuple);
+                        newTuple.add(value);
+                        extraTuples.add(newTuple);
+                    }
                 }
+                tuples = extraTuples;
             }
         }
-        return valuesTuplesT;
+        return tuples;
     }
 }

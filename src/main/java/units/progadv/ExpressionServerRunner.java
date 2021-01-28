@@ -1,16 +1,21 @@
 package units.progadv;
 
-import java.io.IOException;
 
 public class ExpressionServerRunner {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         if (args.length < 1) {
-            System.out.println("No arguments");
+            System.out.println("No arguments, please insert a port number in this format:" +
+                    "\"java -jar MajcenAndrea.jar port_number\"");
+            System.exit(0);
+        }
+        if (args.length > 1){
+            System.out.println("Too many arguments, please insert a port number in this format:" +
+                    "\"java -jar MajcenAndrea.jar port_number\"");
             System.exit(0);
         }
         if (!parameterIsInt(args[0]))
-            throw new NumberFormatException("The given number is not an integer");
+            throw new NumberFormatException("The given port number is not an integer");
         int port = Integer.parseInt(args[0]);
         int cores = Runtime.getRuntime().availableProcessors();
         System.out.printf("The available cores are: %d%n", cores);

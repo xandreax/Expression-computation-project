@@ -1,6 +1,8 @@
 package units.progadv;
 
+import units.progadv.exceptions.ComputationException;
 import units.progadv.process.ExpressionResponse.Response;
+import units.progadv.process.ExpressionResponse.ResultResponseFormatter;
 import units.progadv.process.computation.ComputationProcess;
 import units.progadv.process.statistic.StatCommand;
 import units.progadv.process.statistic.StatisticProcess;
@@ -25,41 +27,42 @@ public class ExpressionClientHandler extends Thread {
         int requestsCounter = 0;
         long startTime;
         Response response;
-        float computationTime;
+        double computationTime;
 
-        try(socket) {
+        try (socket) {
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             while (true) {
                 String result;
                 String line = br.readLine();
                 startTime = System.currentTimeMillis();
-                if(line == null){
+                if (line == null) {
                     System.err.printf("Empty line input, closed connection .%n");
                     break;
-                }
-                else if (line.equals(server.getQuitCommand())) {
+                } else if (line.equals(server.getQuitCommand())) {
                     break;
-                } else if (StatCommand.match(line)){
+                } else if (StatCommand.match(line)) {
                     StatisticProcess statistic = new StatisticProcess(line, server.getComputationTimes());
                     result = statistic.evaluate();
                     computationTime = calculateComputationTime(startTime);
-                    response = new Response(result, computationTime, Response.ResponseType.OK);
+                    response = new Response(result, ResultResponseFormatter.formatTime(computationTime),
+                            Response.ResponseType.OK);
                 } else {
                     try {
                         ComputationProcess computation = new ComputationProcess(line);
                         result = computation.compute();
                         computationTime = calculateComputationTime(startTime);
-                        response = new Response(result, computationTime, Response.ResponseType.OK);
-                    }
-                    catch(Exception e){
-                        result = e.getMessage();
+                        response = new Response(result, ResultResponseFormatter.formatTime(computationTime),
+                                Response.ResponseType.OK);
+                    } catch (ComputationException | IllegalArgumentException e) {
+                        result = String.format("(%s) %s", e.getClass().getSimpleName(), e.getMessage());
                         computationTime = calculateComputationTime(startTime);
-                        response = new Response(result, computationTime, Response.ResponseType.ERR);
+                        response = new Response(result, ResultResponseFormatter.formatTime(computationTime),
+                                Response.ResponseType.ERR);
                     }
                 }
                 server.addComputationTime(computationTime);
-                bw.write( response.toString() + System.lineSeparator());
+                bw.write(response.toString() + System.lineSeparator());
                 bw.flush();
                 requestsCounter = requestsCounter + 1;
             }
@@ -71,8 +74,8 @@ public class ExpressionClientHandler extends Thread {
         }
     }
 
-    private static float calculateComputationTime (long startTime){
+    private static double calculateComputationTime(long startTime) {
         long endTime = System.currentTimeMillis();
-        return (float) (endTime - startTime) / 1000;
+        return (double) (endTime - startTime) / 1000;
     }
 }

@@ -1,6 +1,7 @@
 package units.progadv.process.computation;
 
 import units.progadv.exceptions.*;
+import units.progadv.process.ExpressionResponse.ResultResponseFormatter;
 import units.progadv.process.computation.ExpressionParser.Node;
 import units.progadv.process.computation.ExpressionParser.Parser;
 
@@ -14,7 +15,7 @@ public class ComputationProcess {
         this.lineInput = lineInput;
     }
 
-    public String compute() throws Exception {
+    public String compute() throws ComputationException, IllegalArgumentException {
         String[] lineTokens = requestParser(lineInput);
         String computationKind = lineTokens[0].substring(0, lineTokens[0].indexOf("_"));
         if (!ComputationKind.match(computationKind))
@@ -29,7 +30,7 @@ public class ComputationProcess {
         MapVariableValueGenerator mapGenerator = new MapVariableValueGenerator(lineTokens[1]);
         LinkedHashMap<String, List<Double>> mapVariablesValues = mapGenerator.generateMap();
         TupleVariableValueGenerator tupleGenerator = new TupleVariableValueGenerator(valuesKind, mapVariablesValues);
-        double[][] valuesTuplesT = tupleGenerator.generateTuple();
+        List<List<Double>> tuples = tupleGenerator.generateTuple();
         Parser parser;
         List<Node> exprParsed = new ArrayList<>();
         for (int i = 2; i < lineTokens.length; i++) {
@@ -39,37 +40,35 @@ public class ComputationProcess {
         List<Double> results = new ArrayList<>();
         ExpressionCalculator calculator;
         for (Node expr : exprParsed) {
-            for (double[] doubles : valuesTuplesT) {
-                double[] arrayTuple = new double[mapVariablesValues.keySet().size()];
-                System.arraycopy(doubles, 0, arrayTuple, 0, mapVariablesValues.keySet().size());
-                calculator = new ExpressionCalculator(arrayTuple, mapVariablesValues);
+            for (List<Double> tuple : tuples) {
+                calculator = new ExpressionCalculator(tuple, mapVariablesValues);
                 double result = calculator.calculate(expr);
                 results.add(result);
             }
         }
-        String finalResult;
+        double finalResult;
         switch (computationKind) {
             case "MIN":
                 int indexMin = results.indexOf(Collections.min(results));
-                finalResult = results.get(indexMin).toString();
+                finalResult = results.get(indexMin);
                 break;
             case "MAX":
                 int indexMax = results.indexOf(Collections.max(results));
-                finalResult = results.get(indexMax).toString();
+                finalResult = results.get(indexMax);
                 break;
             case "AVG":
                 double sumTot = 0;
                 for (double n : results)
                     sumTot += n;
-                finalResult = Double.toString(sumTot / results.size());
+                finalResult = sumTot / results.size();
                 break;
             case "COUNT":
-                finalResult = Integer.toString(results.size());
+                finalResult = results.size();
                 break;
             default:
                 throw new IllegalStateException(String.format("Unexpected computation kind: %s", computationKind));
         }
-        return finalResult;
+        return ResultResponseFormatter.formatResult(finalResult);
     }
 
     private static String[] requestParser(String lineInput) throws WrongRequestFormatException {
